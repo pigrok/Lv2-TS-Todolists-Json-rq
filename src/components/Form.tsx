@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTodo } from "../redux/modules/todos";
+import { styled } from "styled-components";
 
-const Form = () => {
+const Form: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
 
@@ -10,6 +11,10 @@ const Form = () => {
 
   const onSubmitHandler = (e: React.FormEvent): void => {
     e.preventDefault();
+    if (!title || !body) {
+      alert("필수 값이 누락되었습니다. 확인 해주세요!");
+      return;
+    }
 
     dispatch(createTodo(title, body));
 
@@ -26,7 +31,7 @@ const Form = () => {
   };
   return (
     <div>
-      <form onSubmit={onSubmitHandler}>
+      <FormContainer onSubmit={onSubmitHandler}>
         <input
           type="text"
           name="title"
@@ -42,9 +47,15 @@ const Form = () => {
           onChange={onBodyHandler}
         />
         <button type="submit">저장</button>
-      </form>
+      </FormContainer>
     </div>
   );
 };
 
 export default Form;
+
+const FormContainer = styled.form`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

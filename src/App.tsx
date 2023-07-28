@@ -1,9 +1,15 @@
 import React from "react";
 import "./App.css";
 import Router from "./shared/Router";
+import GlobalStyle from "./GlobalStyle";
 
-function App() {
-  return <Router />;
-}
+const App = () => {
+  return (
+    <div>
+      <GlobalStyle />
+      <Router />
+    </div>
+  );
+};
 
 export default App;
