@@ -6,11 +6,12 @@ import CommentsList from "../comments/CommentsList";
 import CurrentDate from "../common/CurrentDate";
 import * as S from "./StyleDetail";
 
-interface TodolistProps {
+interface DetailProps {
   todo: Todo;
+  removeHandler: (id: string) => void;
 }
 
-const Detail: React.FC<TodolistProps> = ({ todo }) => {
+const Detail: React.FC<DetailProps> = ({ todo, removeHandler }) => {
   const dispatch = useAppDispatch();
 
   const [editTodos, setEditTodos] = useState<Todo | null>(null);
@@ -33,8 +34,9 @@ const Detail: React.FC<TodolistProps> = ({ todo }) => {
     });
   };
 
-  const removeHandler = (id: string): void => {
+  const removeTodoHandler = (id: string): void => {
     dispatch(removeTodo(id));
+    removeHandler(id);
   };
 
   const updateHandler = (id: string): void => {
@@ -99,7 +101,7 @@ const Detail: React.FC<TodolistProps> = ({ todo }) => {
                           <S.FeatBtn onClick={() => openEidtMode(todo)}>
                             ✏️
                           </S.FeatBtn>
-                          <S.FeatBtn onClick={() => removeHandler(todo.id)}>
+                          <S.FeatBtn onClick={() => removeTodoHandler(todo.id)}>
                             🗑️
                           </S.FeatBtn>
                         </div>

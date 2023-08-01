@@ -16,6 +16,10 @@ const Home: React.FC = () => {
 
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
+  const removeTodoHandler = (id: string): void => {
+    setSelectedTodo(null); // To reset the selectedTodo in the Detail component
+  };
+
   return (
     <S.HomeContainer>
       <Header />
@@ -48,7 +52,9 @@ const Home: React.FC = () => {
         </S.TodolistContaniner>
         <S.DetailBox>
           {" "}
-          {selectedTodo && <Detail todo={selectedTodo} />}
+          {selectedTodo && (
+            <Detail todo={selectedTodo} removeHandler={removeTodoHandler} />
+          )}
         </S.DetailBox>
       </S.HomeWrapper>
     </S.HomeContainer>
