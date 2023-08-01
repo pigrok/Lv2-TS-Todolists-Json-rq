@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTodo } from "../../redux/modules/todos";
-import { styled } from "styled-components";
+import * as S from "./StyleTF";
 
 const Form: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -31,74 +31,28 @@ const Form: React.FC = () => {
   };
   return (
     <div>
-      <FormContainer onSubmit={onSubmitHandler}>
-        <TitleInput
+      <S.FormContainer onSubmit={onSubmitHandler}>
+        <S.TitleInput
           type="text"
           name="title"
           value={title}
           placeholder="제목"
           onChange={onTitleHandler}
         />
-        <BodyInputWrapper>
+        <S.BodyInputWrapper>
           {" "}
-          <BodyInput
+          <S.BodyInput
             type="body"
             name="body"
             value={body}
             placeholder="내용"
             onChange={onBodyHandler}
           />
-          <SubmitBtn type="submit">⬆</SubmitBtn>
-        </BodyInputWrapper>
-      </FormContainer>
+          <S.SubmitBtn type="submit">⬆</S.SubmitBtn>
+        </S.BodyInputWrapper>
+      </S.FormContainer>
     </div>
   );
 };
 
 export default Form;
-
-const FormContainer = styled.form`
-  display: flex;
-
-  margin-top: 20px;
-`;
-
-const TitleInput = styled.input`
-  width: 200px;
-  height: 30px;
-
-  margin-right: 10px;
-
-  border: 1px solid white;
-  border-radius: 15px;
-  padding-left: 15px;
-`;
-
-const BodyInputWrapper = styled.div`
-  display: flex;
-  position: relative;
-  /* flex-direction: column; */
-`;
-
-const BodyInput = styled.input`
-  width: 410px;
-
-  border: 1px solid white;
-  border-radius: 15px;
-  padding-left: 15px;
-`;
-
-const SubmitBtn = styled.button`
-  position: absolute;
-  right: 3px;
-  bottom: 2px;
-  height: 30px;
-
-  width: 35px;
-
-  background-color: #4789ef;
-  border: 1px solid white;
-  border-radius: 25px;
-
-  color: white;
-`;

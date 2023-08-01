@@ -1,5 +1,5 @@
 import React from "react";
-import { styled } from "styled-components";
+import * as S from "./StyleCD";
 
 const CurrentDate: React.FC = () => {
   const months = [
@@ -34,13 +34,7 @@ const CurrentDate: React.FC = () => {
 
   const dateFormat = `${day}, ${month} ${date}, ${year}`;
 
-  return <DateBox>{dateFormat}</DateBox>;
+  return <S.DateBox>{dateFormat}</S.DateBox>;
 };
 
 export default CurrentDate;
-
-const DateBox = styled.p`
-  font-size: 13px;
-
-  text-align: center;
-`;

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { createComment } from "../../redux/modules/comments";
-import { useAppDispatch } from "../../hooks/hooks";
 import { Todo } from "../../redux/modules/todos";
-import { styled } from "styled-components";
+import { useAppDispatch } from "../../hooks/hooks";
+import * as S from "./StyleCF";
 
 interface CommentProps {
   todo: Todo;
@@ -37,73 +37,28 @@ const Comments: React.FC<CommentProps> = ({ todo }) => {
 
   return (
     <div>
-      <CommentFormContainer onSubmit={onSubmitHandler}>
-        <TitleInput
+      <S.CommentFormContainer onSubmit={onSubmitHandler}>
+        <S.TitleInput
           type="writer"
           name="writer"
           value={writer}
           placeholder="작성자"
           onChange={onWriterHandler}
         />
-        <BodyInputWrapper>
+        <S.BodyInputWrapper>
           {" "}
-          <BodyInput
+          <S.BodyInput
             type="contents"
             name="contents"
             value={contents}
             placeholder="내용"
             onChange={onContentsHandler}
           />
-          <SubmitBtn type="submit">⬆</SubmitBtn>
-        </BodyInputWrapper>
-      </CommentFormContainer>
+          <S.SubmitBtn type="submit">⬆</S.SubmitBtn>
+        </S.BodyInputWrapper>
+      </S.CommentFormContainer>
     </div>
   );
 };
 
 export default Comments;
-
-const CommentFormContainer = styled.form`
-  display: flex;
-  margin-top: 20px;
-`;
-
-const TitleInput = styled.input`
-  width: 100px;
-  height: 30px;
-
-  margin-right: 10px;
-
-  border: 1px solid white;
-  border-radius: 15px;
-  padding-left: 15px;
-`;
-
-const BodyInputWrapper = styled.div`
-  display: flex;
-  position: relative;
-  /* flex-direction: column; */
-`;
-
-const BodyInput = styled.input`
-  width: 300px;
-
-  border: 1px solid white;
-  border-radius: 15px;
-  padding-left: 15px;
-`;
-
-const SubmitBtn = styled.button`
-  position: absolute;
-  right: 3px;
-  bottom: 2px;
-  height: 30px;
-
-  width: 35px;
-
-  background-color: #4789ef;
-  border: 1px solid white;
-  border-radius: 25px;
-
-  color: white;
-`;

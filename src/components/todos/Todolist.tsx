@@ -1,7 +1,7 @@
 import React from "react";
 import { Todo, toggleTodo, getCurrentTime } from "../../redux/modules/todos";
-import { styled } from "styled-components";
 import { useAppDispatch } from "../../hooks/hooks";
+import * as S from "./StyleTL";
 
 interface TodolistProps {
   todos: Todo[];
@@ -9,7 +9,7 @@ interface TodolistProps {
   setTodo: (todo: Todo) => void;
 }
 
-const Todolist: React.FC<TodolistProps> = ({ todos, isDone, setTodo }) => {
+const TodoList: React.FC<TodolistProps> = ({ todos, isDone, setTodo }) => {
   const dispatch = useAppDispatch();
 
   const toggleHandler = (todo: Todo): void => {
@@ -21,117 +21,59 @@ const Todolist: React.FC<TodolistProps> = ({ todos, isDone, setTodo }) => {
   };
 
   return (
-    <ListContainer>
+    <S.ListContainer>
       <div>
         {todos
           .filter((todo) => todo.isDone === isDone)
           .map((todo: Todo) => {
             return (
-              <TodoContainer key={todo.id}>
-                <TodoWrapper onClick={() => navDetailPage(todo)}>
+              <S.TodoContainer key={todo.id}>
+                <S.TodoWrapper onClick={() => navDetailPage(todo)}>
                   {isDone ? (
                     <>
-                      <TitleBox isdone={+todo.isDone}>
-                        <TitleLabel isdone={+todo.isDone}>
+                      <S.TitleBox isdone={+todo.isDone}>
+                        <S.TitleLabel isdone={+todo.isDone}>
                           {todo.title}
-                        </TitleLabel>
-                      </TitleBox>{" "}
-                      <ToggleButton
+                        </S.TitleLabel>
+                      </S.TitleBox>{" "}
+                      <S.ToggleButton
                         onClick={() => {
                           toggleHandler(todo);
                         }}
                         isdone={+todo.isDone}
                       >
                         {isDone ? "✖️" : "✔"}
-                      </ToggleButton>
+                      </S.ToggleButton>
                     </>
                   ) : (
                     <>
                       <div>
-                        <ToggleButton
+                        <S.ToggleButton
                           onClick={() => {
                             toggleHandler(todo);
                           }}
                           isdone={+todo.isDone}
                         >
                           {isDone ? "✖️" : "✔"}
-                        </ToggleButton>
+                        </S.ToggleButton>
                       </div>
 
-                      <TitleBox isdone={+todo.isDone}>
-                        <TitleLabel isdone={+todo.isDone}>
+                      <S.TitleBox isdone={+todo.isDone}>
+                        <S.TitleLabel isdone={+todo.isDone}>
                           {todo.title}
-                        </TitleLabel>
-                      </TitleBox>
+                        </S.TitleLabel>
+                      </S.TitleBox>
                     </>
                   )}
-                </TodoWrapper>
-                <DateLabel isdone={+todo.isDone}>
+                </S.TodoWrapper>
+                <S.DateLabel isdone={+todo.isDone}>
                   {isDone ? "완료" : "추가"} : {todo.createAt}
-                </DateLabel>
-              </TodoContainer>
+                </S.DateLabel>
+              </S.TodoContainer>
             );
           })}
       </div>
-    </ListContainer>
+    </S.ListContainer>
   );
 };
-export default Todolist;
-
-const ListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  margin: 10px;
-
-  padding: 10px;
-`;
-
-const TodoContainer = styled.div`
-  margin: 5px 0 20px 0;
-`;
-
-const TodoWrapper = styled.div`
-  display: flex;
-
-  margin: 5px 0 5px 0;
-`;
-
-const TitleBox = styled.div<{ isdone: number }>`
-  display: flex;
-  flex-direction: column;
-
-  border-radius: 20px;
-
-  background-color: ${(props) => (props.isdone ? "#CFD3D8" : "#4789EF")};
-  padding: 5px 20px;
-
-  width: 180px;
-  min-height: 20px;
-
-  word-break: break-word;
-
-  overflow-y: auto;
-`;
-
-const TitleLabel = styled.div<{ isdone: number }>`
-  display: flex;
-  align-items: center;
-  justify-content: ${(props) => (props.isdone ? "flex-start" : "flex-end")};
-`;
-
-const DateLabel = styled.div<{ isdone: number }>`
-  display: flex;
-  justify-content: ${(props) => (props.isdone ? "flex-start" : "flex-end")};
-
-  font-size: 10px;
-`;
-
-const ToggleButton = styled.button<{ isdone: number }>`
-  border: 1px solid white;
-  background-color: white;
-
-  margin-top: 12px;
-
-  color: ${(props) => (props.isdone ? "red" : "green")};
-`;
+export default TodoList;
