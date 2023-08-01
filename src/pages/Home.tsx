@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-
 import { RootState } from "../redux/config/configStore";
 import { Todo } from "../redux/modules/todos";
 import { useAppSelector } from "../hooks/hooks";
 import Header from "../components/common/Header";
 import Form from "../components/todos/TodoForm";
-import Todolist from "../components/todos/TodoList";
+import Todolist from "../components/todos/Todolist";
 import Detail from "../components/detail/Detail";
 import CurrentDate from "../components/common/CurrentDate";
 import * as S from "./StyleHome";
