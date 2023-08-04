@@ -1,24 +1,15 @@
 import React, { useState } from "react";
-import { RootState } from "../redux/config/configStore";
-import { Todo } from "../redux/modules/todos";
-import { useAppSelector } from "../hooks/hooks";
 import Header from "../components/common/Header";
-import Form from "../components/todos/TodoForm";
+import TodoForm from "../components/todos/TodoForm";
 import Todolist from "../components/todos/Todolist";
 import Detail from "../components/detail/Detail";
 import CurrentDate from "../components/common/CurrentDate";
 import * as S from "./StyleHome";
+import { Todo } from "../api/todos";
 
 const Home: React.FC = () => {
-  const todos = useAppSelector((state: RootState) => {
-    return state.todos;
-  });
-
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
-
-  const removeTodoHandler = (id: string): void => {
-    setSelectedTodo(null); // To reset the selectedTodo in the Detail component
-  };
+  const [count, setCount] = useState<Todo[] | null>(null);
 
   return (
     <S.HomeContainer>
@@ -26,7 +17,7 @@ const Home: React.FC = () => {
       <S.HomeWrapper>
         <S.TodolistContaniner>
           <S.TodoTitle>
-            <S.TodoCount>{todos.length}</S.TodoCount>
+            <S.TodoCount>{count?.length}</S.TodoCount>
             <p>TODOLIST</p>
           </S.TodoTitle>
           <S.BoxContainer>
@@ -34,28 +25,29 @@ const Home: React.FC = () => {
             <S.Boxes>
               <S.DoneBox>
                 <Todolist
-                  todos={todos}
+                  setCount={setCount}
                   isDone={true}
                   setTodo={setSelectedTodo}
                 />
               </S.DoneBox>
               <S.TodoBox>
                 <Todolist
-                  todos={todos}
+                  setCount={setCount}
                   isDone={false}
                   setTodo={setSelectedTodo}
                 />
               </S.TodoBox>
             </S.Boxes>
           </S.BoxContainer>
-          <Form />
+          <TodoForm />
         </S.TodolistContaniner>
-        <S.DetailBox>
-          {" "}
-          {selectedTodo && (
-            <Detail todo={selectedTodo} removeHandler={removeTodoHandler} />
-          )}
-        </S.DetailBox>
+        {selectedTodo ? (
+          <S.DetailBox>
+            <Detail todo={selectedTodo} setTodo={setSelectedTodo} />
+          </S.DetailBox>
+        ) : (
+          <S.Empty>"TODO를 선택해주세요!"</S.Empty>
+        )}
       </S.HomeWrapper>
     </S.HomeContainer>
   );

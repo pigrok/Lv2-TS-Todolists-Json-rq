@@ -1,56 +1,86 @@
 import React, { useState } from "react";
+import * as S from "./StyleCL";
+import { Todo } from "../../api/todos";
 import {
   Comment,
+  getComments,
   removeComment,
   updateComment,
-} from "../../redux/modules/comments";
-import { RootState } from "../../redux/config/configStore";
-import { Todo } from "../../redux/modules/todos";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import * as S from "./StyleCL";
-
+} from "../../api/comments";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import Loading from "../image/Loading.gif";
 interface CommentProps {
   todo: Todo;
 }
 
 const CommentsList: React.FC<CommentProps> = ({ todo }) => {
-  const comments = useAppSelector((state: RootState) => {
-    return state.comments;
+  const {
+    isLoading,
+    isError,
+    data: comments = [],
+  } = useQuery<Comment[]>("comments", getComments);
+
+  const [editComment, setEditComment] = useState<Comment | null>(null);
+
+  const queryClient = useQueryClient();
+
+  const removeCommentMutation = useMutation(removeComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("comments");
+    },
   });
 
-  const [editComments, setEditComments] = useState<Comment | null>(null);
+  const removeCommentHandler = (id: number) => {
+    const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
+    if (confirmDelete) {
+      removeCommentMutation.mutate(id);
+    }
+  };
 
-  const dispatch = useAppDispatch();
+  const updateCommentMutation = useMutation(updateComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("comments");
+    },
+  });
+
+  const updateCommentHandler = (comment: Comment): void => {
+    if (!editComment?.contents) {
+      alert("필수 값이 누락되었습니다. 확인 해주세요!");
+      return;
+    }
+
+    const updatedComment = {
+      ...comment,
+      contents: editComment.contents,
+    };
+    updateCommentMutation.mutate(updatedComment);
+    setEditComment(null);
+  };
 
   const onCommentContentsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ): void => {
-    setEditComments({
-      ...(editComments as Comment),
+    setEditComment({
+      ...(editComment as Comment),
       contents: e.target.value,
     });
   };
 
-  const removeHandler = (id: string): void => {
-    dispatch(removeComment(id));
-  };
-
-  const updateHandler = (commentId: string): void => {
-    if (!editComments?.writer || !editComments?.contents) {
-      alert("필수 값이 누락되었습니다. 확인 해주세요!");
-      return;
-    }
-    const updatedComment: Comment = {
-      ...editComments,
-      id: commentId,
-    };
-    dispatch(updateComment(updatedComment));
-    setEditComments(null);
-  };
-
   const openEidtMode = (comment: Comment): void => {
-    setEditComments(comment);
+    setEditComment(comment);
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <img src={Loading}></img>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div>데이터를 불러오는 동안 오류가 발생했습니다</div>;
+  }
 
   return (
     <S.CommentContainer>
@@ -59,7 +89,7 @@ const CommentsList: React.FC<CommentProps> = ({ todo }) => {
         {comments
           .filter((comment) => comment.todoId == todo.id)
           .map((comment) => {
-            const isEditing = editComments?.id === comment.id;
+            const isEditing = editComment?.id === comment.id;
             return (
               <S.CommentBoxes key={comment.id}>
                 <S.WriterBox>{comment.writer}</S.WriterBox>
@@ -67,7 +97,9 @@ const CommentsList: React.FC<CommentProps> = ({ todo }) => {
                   <S.Btns>
                     {isEditing ? (
                       <div>
-                        <S.FeatBtn onClick={() => updateHandler(comment.id)}>
+                        <S.FeatBtn
+                          onClick={() => updateCommentHandler(comment)}
+                        >
                           💾
                         </S.FeatBtn>
                       </div>
@@ -76,7 +108,9 @@ const CommentsList: React.FC<CommentProps> = ({ todo }) => {
                         <S.FeatBtn onClick={() => openEidtMode(comment)}>
                           ✏️
                         </S.FeatBtn>
-                        <S.FeatBtn onClick={() => removeHandler(comment.id)}>
+                        <S.FeatBtn
+                          onClick={() => removeCommentHandler(comment.id)}
+                        >
                           🗑️
                         </S.FeatBtn>
                       </div>
@@ -85,7 +119,7 @@ const CommentsList: React.FC<CommentProps> = ({ todo }) => {
                   <>
                     {isEditing ? (
                       <S.CommentTextarea
-                        value={editComments?.contents || ""}
+                        value={editComment?.contents || ""}
                         onChange={onCommentContentsChange}
                       />
                     ) : (

@@ -1,5 +1,24 @@
 import { styled } from "styled-components";
 
+export const TodoTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const TodoCount = styled.p`
+  border-radius: 15px;
+
+  background-color: #4789ef;
+  color: white;
+
+  width: 40px;
+  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const ListContainer = styled.div`
   display: flex;
   flex-direction: column;

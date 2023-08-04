@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { createComment } from "../../redux/modules/comments";
-import { Todo } from "../../redux/modules/todos";
-import { useAppDispatch } from "../../hooks/hooks";
+import React, { FormEvent, useState } from "react";
 import * as S from "./StyleCF";
+import { useMutation, useQueryClient } from "react-query";
+import { Todo } from "../../api/todos";
+import { Comment, createComment } from "../../api/comments";
 
 interface CommentProps {
   todo: Todo;
@@ -12,19 +12,34 @@ const Comments: React.FC<CommentProps> = ({ todo }) => {
   const [writer, setWriter] = useState<string>("");
   const [contents, setContents] = useState<string>("");
 
-  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-  const onSubmitHandler = (e: React.FormEvent): void => {
+  const createCommentMutation = useMutation(createComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+
+  const createCommentHandler = (e: FormEvent) => {
     e.preventDefault();
+
     if (!writer || !contents) {
-      alert("필수 값이 누락되었습니다. 확인 해주세요!");
-      return;
+      alert("필수값이 누락되었습니다. 확인해주세요");
+      return false;
     }
 
-    dispatch(createComment(writer, contents, todo));
+    const newComment: Omit<Comment, "id"> = {
+      todoId: todo.id,
+      writer,
+      contents,
+    };
 
-    setWriter("");
-    setContents("");
+    const confirmCreate = window.confirm("등록하시겠습니까?");
+    if (!confirmCreate) {
+      return false;
+    }
+
+    createCommentMutation.mutate(newComment);
   };
 
   const onWriterHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -37,7 +52,7 @@ const Comments: React.FC<CommentProps> = ({ todo }) => {
 
   return (
     <div>
-      <S.CommentFormContainer onSubmit={onSubmitHandler}>
+      <S.CommentFormContainer onSubmit={createCommentHandler}>
         <S.TitleInput
           type="writer"
           name="writer"

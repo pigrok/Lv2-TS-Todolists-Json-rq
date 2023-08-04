@@ -1,23 +1,40 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createTodo } from "../../redux/modules/todos";
+import React, { FormEvent, useState } from "react";
 import * as S from "./StyleTF";
+import { useMutation, useQueryClient } from "react-query";
+import { Todo, createTodo, getCurrentTime } from "../../api/todos";
 
-const Form: React.FC = () => {
+const TodoForm: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
 
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
-  const onSubmitHandler = (e: React.FormEvent): void => {
+  const createTodoMutation = useMutation(createTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+
+  const createTodoHandler = (e: FormEvent) => {
     e.preventDefault();
+
     if (!title || !body) {
-      alert("필수 값이 누락되었습니다. 확인 해주세요!");
-      return;
+      alert("필수값이 누락되었습니다. 확인해주세요");
+      return false;
     }
 
-    dispatch(createTodo(title, body));
+    const newTodo: Omit<Todo, "id"> = {
+      title,
+      body,
+      createAt: getCurrentTime(),
+      isDone: false,
+    };
+    const confirmCreate = window.confirm("등록하시겠습니까?");
+    if (!confirmCreate) {
+      return false;
+    }
 
+    createTodoMutation.mutate(newTodo);
     setTitle("");
     setBody("");
   };
@@ -31,7 +48,7 @@ const Form: React.FC = () => {
   };
   return (
     <div>
-      <S.FormContainer onSubmit={onSubmitHandler}>
+      <S.FormContainer onSubmit={createTodoHandler}>
         <S.TitleInput
           type="text"
           name="title"
@@ -55,4 +72,4 @@ const Form: React.FC = () => {
   );
 };
 
-export default Form;
+export default TodoForm;

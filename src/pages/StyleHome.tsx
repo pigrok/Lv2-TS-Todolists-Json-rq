@@ -89,3 +89,18 @@ export const DetailBox = styled.div`
   height: 700px;
   padding: 10px;
 `;
+
+export const Empty = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 25px;
+  border: 1px solid black;
+  border-radius: 10px;
+
+  background-color: #ecebeb;
+  width: 450px;
+  height: 700px;
+  padding: 10px;
+`;

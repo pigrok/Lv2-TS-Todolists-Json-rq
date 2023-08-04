@@ -1,20 +1,53 @@
 import React, { useState } from "react";
-import { Todo, removeTodo, updateTodo } from "../../redux/modules/todos";
-import { useAppDispatch } from "../../hooks/hooks";
 import Comment from "../comments/CommentsForm";
 import CommentsList from "../comments/CommentsList";
 import CurrentDate from "../common/CurrentDate";
 import * as S from "./StyleDetail";
+import { Todo, removeTodo, updateTodo } from "../../api/todos";
+import { useMutation, useQueryClient } from "react-query";
 
 interface DetailProps {
   todo: Todo;
-  removeHandler: (id: string) => void;
+  setTodo: React.Dispatch<React.SetStateAction<Todo | null>>;
 }
 
-const Detail: React.FC<DetailProps> = ({ todo, removeHandler }) => {
-  const dispatch = useAppDispatch();
-
+const Detail: React.FC<DetailProps> = ({ todo, setTodo }) => {
   const [editTodos, setEditTodos] = useState<Todo | null>(null);
+  const queryClient = useQueryClient();
+
+  const removeTodoMutation = useMutation(removeTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+
+  const removeTodoHandler = (id: number) => {
+    const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
+    if (confirmDelete) {
+      removeTodoMutation.mutate(id);
+      setTodo(null);
+    }
+  };
+
+  const updateMutation = useMutation(updateTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+
+  const updateTodoHandler = (todo: Todo): void => {
+    if (!editTodos?.title || !editTodos?.body) {
+      alert("필수 값이 누락되었습니다. 확인 해주세요!");
+      return;
+    }
+
+    const updatedTodo = {
+      ...todo,
+      title: todo.title,
+      bodoy: todo.body,
+    };
+    updateMutation.mutate(updatedTodo);
+  };
 
   const onTitleChangeHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -34,25 +67,7 @@ const Detail: React.FC<DetailProps> = ({ todo, removeHandler }) => {
     });
   };
 
-  const removeTodoHandler = (id: string): void => {
-    dispatch(removeTodo(id));
-    removeHandler(id);
-  };
-
-  const updateHandler = (id: string): void => {
-    if (!editTodos?.title || !editTodos?.body) {
-      alert("필수 값이 누락되었습니다. 확인 해주세요!");
-      return;
-    }
-    const updatedTodo: Todo = {
-      ...editTodos,
-      id,
-    };
-    dispatch(updateTodo(updatedTodo));
-    setEditTodos(null);
-  };
-
-  const openEidtMode = (todo: Todo): void => {
+  const openEditMode = (todo: Todo): void => {
     setEditTodos(todo);
   };
 
@@ -93,12 +108,12 @@ const Detail: React.FC<DetailProps> = ({ todo, removeHandler }) => {
                     </>
                     <S.Btns>
                       {isEditing ? (
-                        <S.FeatBtn onClick={() => updateHandler(todo.id)}>
+                        <S.FeatBtn onClick={() => updateTodoHandler(todo)}>
                           💾
                         </S.FeatBtn>
                       ) : (
                         <div>
-                          <S.FeatBtn onClick={() => openEidtMode(todo)}>
+                          <S.FeatBtn onClick={() => openEditMode(todo)}>
                             ✏️
                           </S.FeatBtn>
                           <S.FeatBtn onClick={() => removeTodoHandler(todo.id)}>
