@@ -43,7 +43,7 @@ const Home: React.FC = () => {
         </S.TodolistContaniner>
         {selectedTodo ? (
           <S.DetailBox>
-            <Detail todo={selectedTodo} setTodo={setSelectedTodo} />
+            <Detail todoData={selectedTodo} setTodo={setSelectedTodo} />
           </S.DetailBox>
         ) : (
           <S.Empty>"TODO를 선택해주세요!"</S.Empty>

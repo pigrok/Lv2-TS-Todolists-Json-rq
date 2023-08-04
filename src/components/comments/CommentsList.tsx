@@ -119,11 +119,14 @@ const CommentsList: React.FC<CommentProps> = ({ todo }) => {
                   <>
                     {isEditing ? (
                       <S.CommentTextarea
+                        isdone={+todo.isDone}
                         value={editComment?.contents || ""}
                         onChange={onCommentContentsChange}
                       />
                     ) : (
-                      <S.CommentBox>{comment.contents}</S.CommentBox>
+                      <S.CommentBox isdone={+todo.isDone}>
+                        {comment.contents}
+                      </S.CommentBox>
                     )}
                   </>
                 </S.BoxToBox>

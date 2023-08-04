@@ -55,13 +55,13 @@ export const FeatBtn = styled.button`
   cursor: pointer;
 `;
 
-export const CommentBox = styled.div`
+export const CommentBox = styled.div<{ isdone: number }>`
   display: flex;
   justify-content: flex-end;
 
   border-radius: 20px;
 
-  background-color: #4789ef;
+  background-color: ${(props) => (props.isdone ? "#4789ef" : "#cfd3d8")};
   padding: 5px 20px;
 
   width: 250px;
@@ -76,10 +76,10 @@ export const CommentBox = styled.div`
   scrollbar-color: #888 #f1f1f1;
 `;
 
-export const CommentTextarea = styled.textarea`
+export const CommentTextarea = styled.textarea<{ isdone: number }>`
   border-radius: 20px;
 
-  background-color: #4789ef;
+  background-color: ${(props) => (props.isdone ? "#4789ef" : "#cfd3d8")};
   padding: 5px 20px;
 
   width: 200px;

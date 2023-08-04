@@ -3,15 +3,24 @@ import Comment from "../comments/CommentsForm";
 import CommentsList from "../comments/CommentsList";
 import CurrentDate from "../common/CurrentDate";
 import * as S from "./StyleDetail";
-import { Todo, removeTodo, updateTodo } from "../../api/todos";
-import { useMutation, useQueryClient } from "react-query";
+import { Todo, getTodos, removeTodo, updateTodo } from "../../api/todos";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import Loading from "../image/Loading.gif";
 
 interface DetailProps {
-  todo: Todo;
+  todoData: Todo;
   setTodo: React.Dispatch<React.SetStateAction<Todo | null>>;
 }
 
-const Detail: React.FC<DetailProps> = ({ todo, setTodo }) => {
+const Detail: React.FC<DetailProps> = ({ todoData, setTodo }) => {
+  const {
+    isLoading,
+    isError,
+    data: todos = [],
+  } = useQuery<Todo[]>("todos", getTodos);
+
+  const todo = todos.find((todo) => todo.id === todoData.id);
+
   const [editTodos, setEditTodos] = useState<Todo | null>(null);
   const queryClient = useQueryClient();
 
@@ -43,10 +52,12 @@ const Detail: React.FC<DetailProps> = ({ todo, setTodo }) => {
 
     const updatedTodo = {
       ...todo,
-      title: todo.title,
-      bodoy: todo.body,
+      title: editTodos.title,
+      body: editTodos.body,
     };
+
     updateMutation.mutate(updatedTodo);
+    setEditTodos(null);
   };
 
   const onTitleChangeHandler = (
@@ -71,7 +82,19 @@ const Detail: React.FC<DetailProps> = ({ todo, setTodo }) => {
     setEditTodos(todo);
   };
 
-  const isEditing = editTodos?.id === todo.id;
+  if (isLoading) {
+    return (
+      <div>
+        <img src={Loading}></img>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div>데이터를 불러오는 동안 오류가 발생했습니다</div>;
+  }
+
+  const isEditing = editTodos?.id === todoData.id;
 
   return (
     <>
@@ -89,21 +112,29 @@ const Detail: React.FC<DetailProps> = ({ todo, setTodo }) => {
                 <S.TodoBox>
                   {isEditing ? (
                     <S.TitleTextarea
+                      isdone={+todo.isDone}
                       value={editTodos?.title}
                       onChange={onTitleChangeHandler}
                     />
                   ) : (
-                    <S.TitleDetail> {todo.title}</S.TitleDetail>
+                    <S.TitleDetail isdone={+todo.isDone}>
+                      {" "}
+                      {todo.title}
+                    </S.TitleDetail>
                   )}
                   <S.BB>
                     <>
                       {isEditing ? (
                         <S.BodyTextarea
+                          isdone={+todo.isDone}
                           value={editTodos?.body}
                           onChange={onBodyChangeHandler}
                         />
                       ) : (
-                        <S.BodyDetail> {todo.body}</S.BodyDetail>
+                        <S.BodyDetail isdone={+todo.isDone}>
+                          {" "}
+                          {todo.body}
+                        </S.BodyDetail>
                       )}
                     </>
                     <S.Btns>

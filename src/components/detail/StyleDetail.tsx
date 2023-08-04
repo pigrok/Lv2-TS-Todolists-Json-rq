@@ -31,12 +31,12 @@ export const TodoBox = styled.div`
   flex-direction: column;
 `;
 
-export const TitleDetail = styled.div`
+export const TitleDetail = styled.div<{ isdone: number }>`
   border-radius: 20px;
 
   border: 1px solid none;
 
-  background-color: #cfd3d8;
+  background-color: ${(props) => (props.isdone ? "#cfd3d8" : "#4789ef")};
   padding: 5px 20px;
 
   width: 180px;
@@ -50,10 +50,10 @@ export const TitleDetail = styled.div`
   overflow-y: auto;
 `;
 
-export const TitleTextarea = styled.textarea`
+export const TitleTextarea = styled.textarea<{ isdone: number }>`
   border-radius: 20px;
 
-  background-color: #cfd3d8;
+  background-color: ${(props) => (props.isdone ? "#cfd3d8" : "#4789ef")};
   padding: 5px 20px;
 
   width: 180px;
@@ -69,13 +69,12 @@ export const TitleTextarea = styled.textarea`
   overflow-y: auto;
 `;
 
-export const BodyDetail = styled.div`
+export const BodyDetail = styled.div<{ isdone: number }>`
   display: flex;
   flex-direction: column;
 
   border-radius: 20px;
-
-  background-color: #cfd3d8;
+  background-color: ${(props) => (props.isdone ? "#cfd3d8" : "#4789ef")};
   padding: 10px 20px;
 
   width: 250px;
@@ -89,10 +88,10 @@ export const BodyDetail = styled.div`
   overflow-y: auto;
 `;
 
-export const BodyTextarea = styled.textarea`
+export const BodyTextarea = styled.textarea<{ isdone: number }>`
   border-radius: 20px;
 
-  background-color: #cfd3d8;
+  background-color: ${(props) => (props.isdone ? "#cfd3d8" : "#4789ef")};
   padding: 10px 20px;
 
   width: 250px;
