@@ -16,7 +16,7 @@ const Comments: React.FC<CommentProps> = ({ todo }) => {
 
   const createCommentMutation = useMutation(createComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries("todos");
+      queryClient.invalidateQueries("comments");
     },
   });
 
@@ -40,6 +40,8 @@ const Comments: React.FC<CommentProps> = ({ todo }) => {
     }
 
     createCommentMutation.mutate(newComment);
+    setWriter("");
+    setContents("");
   };
 
   const onWriterHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
