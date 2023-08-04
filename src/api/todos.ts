@@ -21,11 +21,6 @@ const getTodos = async (): Promise<Todo[]> => {
   return response.data;
 };
 
-const getDetail = async (todoId: string): Promise<Todo> => {
-  const response = await api.get(`/todos/${todoId}`);
-  return response.data;
-};
-
 const createTodo = async (newTodo: Omit<Todo, "id">): Promise<void> => {
   await api.post(`/todos`, newTodo);
 };
@@ -45,4 +40,4 @@ const updateTodo = async (todo: Todo): Promise<void> => {
   await api.patch(`/todos/${todo.id}`, todo);
 };
 
-export { getTodos, getDetail, createTodo, removeTodo, toggleTodo, updateTodo };
+export { getTodos, createTodo, removeTodo, toggleTodo, updateTodo };
